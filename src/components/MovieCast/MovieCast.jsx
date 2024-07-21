@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Suspense, lazy } from 'react';
+import  { useEffect, useState,  } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchMovieCredits } from '../../components/tmdb';
 import styles from './MovieCast.module.css';
