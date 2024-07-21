@@ -1,6 +1,6 @@
 import React, { useEffect, useState, Suspense, lazy } from 'react';
 import { useParams } from 'react-router-dom';
-import { fetchMovieCredits } from '../../api/tmdb';
+import { fetchMovieCredits } from '../../components/tmdb';
 import styles from './MovieCast.module.css';
 
 const MovieCast = () => {
