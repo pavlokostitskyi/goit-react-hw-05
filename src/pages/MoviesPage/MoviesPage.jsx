@@ -11,18 +11,21 @@ const MoviesPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (!query) return;
+   useEffect(() => {
+    const searchQuery = searchParams.get('query') || '';
+    if (!searchQuery) return;
 
     setLoading(true);
-    searchMovies(query)
+    searchMovies(searchQuery)
       .then(setMovies)
       .catch(setError)
       .finally(() => setLoading(false));
-  }, [query]);
+  }, [searchParams]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (query.trim() === '') return;
+
     setSearchParams({ query });
   };
 
@@ -40,7 +43,7 @@ const MoviesPage = () => {
       </form>
       {loading && <div>Loading...</div>}
       {error && <div>Error: {error.message}</div>}
-      <MovieList movies={movies} />
+      {movies.length > 0 && <MovieList movies={movies} />}
     </div>
   );
 };
