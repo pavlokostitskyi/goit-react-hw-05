@@ -54,7 +54,7 @@ export const fetchMovieDetails = async (movieId) => {
   }
 };
 
-export const fetchMovieCredits = async (movieId) => {
+export const fetchMovieCast = async (movieId) => {
   try {
     const { data } = await instance.get(`/movie/${movieId}/credits`);
     if (!data.cast) {
