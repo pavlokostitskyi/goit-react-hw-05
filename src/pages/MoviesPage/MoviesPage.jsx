@@ -1,29 +1,45 @@
-import  { useState  } from 'react';
-import { searchMovies } from '../../components/tmdb';
+import  { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import {  searchMovies } from '../../components/tmdb';
 import MovieList from '../../components/MovieList/MovieList';
-import styles from './MoviesPage.module.css';
-import Navigation from '../../components/Navigation/Navigation';
+import styles from './MoviesPage.module.css'
 
 const MoviesPage = () => {
-  const [query, setQuery] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
   const [movies, setMovies] = useState([]);
+  const [query, setQuery] = useState(searchParams.get('query') || '');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleSearch = async () => {
-    const results = await searchMovies(query);
-    setMovies(results);
+  useEffect(() => {
+    if (!query) return;
+
+    setLoading(true);
+    searchMovies(query)
+      .then(setMovies)
+      .catch(setError)
+      .finally(() => setLoading(false));
+  }, [query]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setSearchParams({ query });
   };
 
   return (
-    <div className={styles.container}>
-      <Navigation />
+    <div className={styles.moviesPage}>
       <h1>Search Movies</h1>
-      <input
-        type="text"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="Enter movie title"
-      />
-      <button onClick={handleSearch}>Search</button>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search for movies..."
+        />
+        <button type="submit">Search</button>
+      </form>
+      {loading && <div>Loading...</div>}
+      {error && <div>Error: {error.message}</div>}
       <MovieList movies={movies} />
     </div>
   );

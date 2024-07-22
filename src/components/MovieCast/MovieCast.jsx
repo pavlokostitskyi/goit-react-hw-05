@@ -1,34 +1,30 @@
 import  { useEffect, useState,  } from 'react';
 import { useParams } from 'react-router-dom';
-import { fetchMovieCredits } from '../../components/tmdb';
-import styles from './MovieCast.module.css';
+import { fetchMovieCast } from '../../components/tmdb';
+
 
 const MovieCast = () => {
   const { movieId } = useParams();
   const [cast, setCast] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchCast = async () => {
-      const castData = await fetchMovieCredits(movieId);
-      setCast(castData);
-    };
-
-    fetchCast();
+    fetchMovieCast(movieId)
+      .then(setCast)
+      .catch(setError)
+      .finally(() => setLoading(false));
   }, [movieId]);
 
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
   return (
-    <div className={styles.container}>
-      <h2>Cast</h2>
+    <div>
+      <h3>Cast</h3>
       <ul>
-        {cast.map(actor => (
-          <li key={actor.id}>
-            <img 
-              src={`https://image.tmdb.org/t/p/w200${actor.profile_path}`} 
-              alt={actor.name} 
-              className={styles.profile}
-            />
-            <span>{actor.name}</span>
-          </li>
+        {cast.map(member => (
+          <li key={member.id}>{member.name}</li>
         ))}
       </ul>
     </div>
